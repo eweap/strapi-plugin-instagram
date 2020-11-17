@@ -1,0 +1,29 @@
+{
+    "name": "strapi-plugin-instagram",
+    "version": "0.0.0",
+    "description": "This plugin add your Instagram feed to the Strapi API",
+    "strapi": {
+        "name": "Instagram",
+        "icon": "camera",
+        "description": "This plugin add your Instagram services to the Strapi API"
+    },
+    "dependencies": {},
+    "devDependencies": {},
+    "author": {
+        "name": "Jonathan Bonnefoy",
+        "email": "contact@e-weap.fr",
+        "url": "https://e-weap.fr"
+    },
+    "maintainers": [
+        {
+            "name": "Jonathan Bonnefoy",
+            "email": "contact@e-weap.fr",
+            "url": "https://e-weap.fr"
+        }
+    ],
+    "engines": {
+        "node": ">=10.0.0",
+        "npm": ">=6.0.0"
+    },
+    "license": "MIT"
+}
