@@ -1,0 +1,42 @@
+// Placez vos paramètres dans ce fichier pour remplacer les paramètres par défaut et les paramètres utilisateur.
+{
+    // Rechercher
+    // Configurez les modèles Glob pour exclure les fichiers et les dossiers des recherches. Hérite de tous les modèles Glob à partir du paramètre files.exclude.
+    "search.exclude": {
+        "coverage": true
+    },
+
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/.hg/store/**": true,
+        "**/cache/**": true,
+        "**/coverage/**": true,
+        "**/dist/**": true,
+        "**/integrations/**": true,
+        "**/platforms/**": true
+    },
+
+    // Use the local typescript version
+    "typescript.tsdk": "node_modules/typescript/lib",
+
+    // Editor
+    "editor.autoIndent": "full",
+    "editor.codeLens": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.renderWhitespace": "none",
+    "editor.wordWrap": "off",
+
+    // Files
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/*.js": {
+            "when": "$(basename).ts"
+        }
+    },
+    "files.trimTrailingWhitespace": true
+}

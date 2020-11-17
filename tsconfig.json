@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "./dist",
+        "sourceMap": false,
+        "declaration": false,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "target": "es2015", // or es2015 ?
+        "module": "CommonJS",
+        "typeRoots": ["node_modules/@types", "typings"],
+        "lib": ["es2017", "DOM"],
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true, // Allow to import as `import React from 'react'` instead of `import * as React from 'react'`
+        "jsx": "react"
+    },
+    "exclude": ["node_modules"]
+}

@@ -1,0 +1,23 @@
+{
+    "extends": ["../.eslintrc.json", "plugin:react/recommended"],
+
+    "env": {
+        "node": false,
+        "browser": true
+    },
+
+    "overrides": [
+        {
+            "files": ["*.tsx"],
+            "rules": {
+                "@typescript-eslint/no-unused-vars": "off"
+            }
+        }
+    ],
+
+    "settings": {
+        "react": {
+            "version": "16.13.1"
+        }
+    }
+}
