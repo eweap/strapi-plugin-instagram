@@ -1,9 +1,8 @@
 {
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "./dist",
-        "sourceMap": false,
-        "declaration": false,
+        "sourceMap": true,
+        "declaration": true,
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -12,10 +11,7 @@
         "typeRoots": ["node_modules/@types", "typings"],
         "lib": ["es2017", "DOM"],
         "strictNullChecks": true,
-        "noImplicitAny": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true, // Allow to import as `import React from 'react'` instead of `import * as React from 'react'`
-        "jsx": "react"
+        "noImplicitAny": true
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "**/tsconfig.json"]
 }

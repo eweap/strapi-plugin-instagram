@@ -1,0 +1,26 @@
+{
+    "connection": "default",
+    "collectionName": "instagram_posts",
+    "info": {
+        "name": "Publications instagram",
+        "description": ""
+    },
+    "options": {
+        "increments": true,
+        "timestamps": true
+    },
+    "attributes": {
+        "externalId": {
+            "type": "string"
+        },
+        "mediaType": {
+            "type": "string"
+        },
+        "mediaUrl": {
+            "type": "string"
+        },
+        "thumbnailUrl": {
+            "type": "string"
+        }
+    }
+}

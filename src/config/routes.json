@@ -1,0 +1,29 @@
+{
+    "routes": [
+        {
+            "method": "GET",
+            "path": "/connect",
+            "handler": "instagram-connect.getAuthorizationUrl",
+            "config": {
+                "policies": []
+            }
+        },
+        {
+            "method": "POST",
+            "path": "/callback",
+            "handler": "instagram-connect.handleCallback",
+            "config": {
+                "policies": []
+            }
+        },
+
+        {
+            "method": "GET",
+            "path": "/posts",
+            "handler": "instagram-posts.index",
+            "config": {
+                "policies": []
+            }
+        }
+    ]
+}
