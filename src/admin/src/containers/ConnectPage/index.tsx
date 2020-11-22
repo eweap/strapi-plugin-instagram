@@ -13,7 +13,8 @@ import { useGlobalContext } from 'strapi-helper-plugin';
 const ConnectPage = () => {
     const globalContext = useGlobalContext();
     const pluginName = globalContext.plugins.instagram.name;
-    let jwtToken = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
+    let jwtToken =
+        localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
     jwtToken = jwtToken ? JSON.parse(jwtToken) : jwtToken;
 
     async function connect() {

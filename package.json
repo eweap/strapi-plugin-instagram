@@ -7,7 +7,7 @@
     "scripts": {
         "build": "rimraf dist && tsc -p src",
         "watch": "rimraf dist && tsc -w -p src",
-        "test": "jest"
+        "test": "jest --forceExit --detectOpenHandles"
     },
     "workspaces": [
         "src"
@@ -30,7 +30,8 @@
         "eslint-plugin-react": "^7.21.5",
         "jest": "^26.6.3",
         "prettier": "^2.1.2",
-        "rimraf": "^3.0.2"
+        "rimraf": "^3.0.2",
+        "ts-node": "^9.0.0"
     },
     "author": {
         "name": "Jonathan Bonnefoy",

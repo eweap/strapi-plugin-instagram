@@ -1,11 +1,12 @@
 {
     "extends": "../tsconfig.json",
-    "include": ["**/*.ts", "**/*.json"],
     "compilerOptions": {
         "rootDir": ".",
         "outDir": "../dist",
         "resolveJsonModule": true,
         "esModuleInterop": true, // Allow to import as `import React from 'react'` instead of `import * as React from 'react'`
         "jsx": "react"
-    }
+    },
+    "include": ["**/*.ts", "**/*.json"],
+    "exclude": ["**/*.spec.ts", "testing/**/*.ts", "tsconfig.json"]
 }

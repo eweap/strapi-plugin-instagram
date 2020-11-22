@@ -8,4 +8,11 @@ declare namespace strapi {
     const log: any;
     const store: any;
     const query: any;
+
+    const lockApp: () => undefined;
+}
+
+interface StrapiPluginStore {
+    set: () => Promise<any>;
+    get: () => Promise<any>;
 }

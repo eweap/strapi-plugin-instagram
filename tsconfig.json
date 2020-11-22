@@ -12,6 +12,5 @@
         "lib": ["es2017", "DOM"],
         "strictNullChecks": true,
         "noImplicitAny": true
-    },
-    "exclude": ["node_modules", "**/tsconfig.json"]
+    }
 }

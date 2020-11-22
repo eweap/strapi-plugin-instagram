@@ -1,15 +1,11 @@
 import axios from 'axios';
 
-export async function getConfigAuthorization() {
-    const pluginStore = strapi.store({
-        environment: strapi.config.environment,
-        type: 'plugin',
-        name: 'instagram',
-    });
-
-    return await pluginStore.get({
-        key: 'authorization',
-    });
+export async function getAuthorizationConfig() {
+    return await strapi.plugins.instagram.services['instagram-plugin-store']
+        .getPluginStore()
+        .get({
+            key: 'authorization',
+        });
 }
 
 export async function getAll() {
@@ -17,7 +13,7 @@ export async function getAll() {
 }
 
 export async function fetchFeed() {
-    const { accessToken, userId } = await this.getConfigAuthorization();
+    const { accessToken, userId } = await this.getAuthorizationConfig();
 
     try {
         const { data } = await axios.get(
@@ -36,7 +32,7 @@ export async function fetchFeed() {
 }
 
 export async function updateFeed(data: any) {
-    const { accessToken } = await this.getConfigAuthorization();
+    const { accessToken } = await this.getAuthorizationConfig();
 
     const mediaIds = data.data.map((media: any) => media.id);
 

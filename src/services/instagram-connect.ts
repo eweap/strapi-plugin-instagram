@@ -2,19 +2,19 @@ import axios from 'axios';
 
 import { InstagramAuthorizationData } from '../interfaces/authorization-data.interface';
 
-export async function handleAuthorizationCode(code: string) {
+export async function handleAuthorizationCode(code: string): Promise<boolean> {
     try {
         const {
             access_token: short_access_token,
             user_id,
-        } = await requestShortAccessToken(code);
+        } = await this.requestShortAccessToken(code);
         const {
             access_token: long_access_token,
             token_type,
             expires_in,
-        } = await requestLongAccessToken(short_access_token);
+        } = await this.requestLongAccessToken(short_access_token);
 
-        await saveAuthorizationData({
+        await this.saveAuthorizationData({
             user_id,
             code,
             long_access_token,
@@ -30,24 +30,25 @@ export async function handleAuthorizationCode(code: string) {
         strapi.log.error(
             `❌ Instagram Plugin -> Failed retrieving short access token (${errorMessage})`
         );
+
         return false;
     }
 }
 
-export async function saveAuthorizationData(data: InstagramAuthorizationData) {
-    const pluginStore = strapi.store({
-        environment: strapi.config.environment,
-        type: 'plugin',
-        name: 'instagram',
-    });
-
-    await pluginStore.set({
-        key: 'authorization',
-        value: data,
-    });
+export async function saveAuthorizationData(
+    data: InstagramAuthorizationData
+): Promise<void> {
+    await strapi.plugins.instagram.services['instagram-plugin-store']
+        .getPluginStore()
+        .set({
+            key: 'authorization',
+            value: data,
+        });
 }
 
-export async function requestShortAccessToken(code: string) {
+export async function requestShortAccessToken(
+    code: string
+): Promise<{ access_token: string; user_id: string }> {
     const { url, requestData } = await strapi.plugins.instagram.services[
         'instagram-request-builder'
     ].getShortAccessTokenUrl(code);
@@ -64,7 +65,7 @@ export async function requestShortAccessToken(code: string) {
             `❌ Instagram Plugin -> Failed retrieving short access token (${errorMessage})`
         );
 
-        return null;
+        throw error;
     }
 }
 
@@ -73,13 +74,23 @@ export async function requestLongAccessToken(shortAccessToken: string) {
         'instagram-request-builder'
     ].getLongAccessTokenUrl(shortAccessToken);
 
-    const { data } = await axios.get(url);
+    try {
+        const { data } = await axios.get(url);
+        return {
+            access_token: data['access-token'],
+            token_type: data['token-type'],
+            expires_in: data['expires-in'],
+        };
+    } catch (error) {
+        const errorMessage =
+            error?.response?.data?.error_message || error.toString();
 
-    return {
-        access_token: data['access-token'],
-        token_type: data['token-type'],
-        expires_in: data['expires-in'],
-    };
+        strapi.log.error(
+            `❌ Instagram Plugin -> Failed retrieving long access token (${errorMessage})`
+        );
+
+        throw error;
+    }
 }
 
 export async function refreshLongAccessToken(longAccessToken: string) {
@@ -92,6 +103,6 @@ export async function refreshLongAccessToken(longAccessToken: string) {
     return {
         access_token: data['access-token'],
         token_type: data['token-type'],
-        expiresIn: data['expires-in'],
+        expires_in: data['expires-in'],
     };
 }

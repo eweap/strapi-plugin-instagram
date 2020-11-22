@@ -12,7 +12,8 @@ import { useGlobalContext } from 'strapi-helper-plugin';
 const ConnectEndpointPage = () => {
     const globalContext = useGlobalContext();
     const pluginName = globalContext.plugins.instagram.name;
-    let jwtToken = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
+    let jwtToken =
+        localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
     jwtToken = jwtToken ? JSON.parse(jwtToken) : jwtToken;
 
     const code = new URLSearchParams(window.location.search).get('code');
