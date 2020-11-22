@@ -17,15 +17,24 @@ const ConnectEndpointPage = () => {
     jwtToken = jwtToken ? JSON.parse(jwtToken) : jwtToken;
 
     const code = new URLSearchParams(window.location.search).get('code');
-    axios.post(
-        strapi.backendURL + '/instagram/callback',
-        { code },
-        {
-            headers: {
-                Authorization: `Bearer ${jwtToken}`,
-            },
-        }
-    );
+    axios
+        .post(
+            strapi.backendURL + '/instagram/callback',
+            { code },
+            {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            }
+        )
+        .then(
+            () =>
+                (window.location.href =
+                    '/admin/plugins/instagram/connect-success'),
+            () =>
+                (window.location.href =
+                    '/admin/plugins/instagram/connect-error')
+        );
 
     return (
         <div>

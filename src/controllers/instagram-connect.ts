@@ -11,7 +11,7 @@ export async function handleCallback(ctx: any) {
 
     // No code provided, redirect to error page
     if (!code) {
-        ctx.response.redirect('/admin/plugins/instagram/connect-error');
+        ctx.throw(401, 'No code provided');
     }
 
     // Handle authorzation code
@@ -20,8 +20,8 @@ export async function handleCallback(ctx: any) {
     ].handleAuthorizationCode(code);
 
     if (success) {
-        ctx.response.redirect('/admin/plugins/instagram/connect-success');
+        ctx.send();
     } else {
-        ctx.response.redirect('/admin/plugins/instagram/connect-error');
+        ctx.throw(401);
     }
 }
