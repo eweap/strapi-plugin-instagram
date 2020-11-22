@@ -7,14 +7,14 @@ export async function handleAuthorizationCode(code: string): Promise<boolean> {
         const {
             access_token: short_access_token,
             user_id,
-        } = await this.requestShortAccessToken(code);
+        } = await requestShortAccessToken(code);
         const {
             access_token: long_access_token,
             token_type,
             expires_in,
-        } = await this.requestLongAccessToken(short_access_token);
+        } = await requestLongAccessToken(short_access_token);
 
-        await this.saveAuthorizationData({
+        await saveAuthorizationData({
             user_id,
             code,
             long_access_token,
@@ -38,6 +38,7 @@ export async function handleAuthorizationCode(code: string): Promise<boolean> {
 export async function saveAuthorizationData(
     data: InstagramAuthorizationData
 ): Promise<void> {
+    console.log('saving', data);
     await strapi.plugins.instagram.services['instagram-plugin-store']
         .getPluginStore()
         .set({
@@ -69,17 +70,20 @@ export async function requestShortAccessToken(
     }
 }
 
-export async function requestLongAccessToken(shortAccessToken: string) {
+export async function requestLongAccessToken(
+    shortAccessToken: string
+): Promise<{ access_token: string; token_type: string; expires_in: string }> {
     const url = await strapi.plugins.instagram.services[
         'instagram-request-builder'
     ].getLongAccessTokenUrl(shortAccessToken);
 
     try {
         const { data } = await axios.get(url);
+
         return {
-            access_token: data['access-token'],
-            token_type: data['token-type'],
-            expires_in: data['expires-in'],
+            access_token: data.access_token,
+            token_type: data.token_type,
+            expires_in: data.expires_in,
         };
     } catch (error) {
         const errorMessage =
@@ -93,7 +97,9 @@ export async function requestLongAccessToken(shortAccessToken: string) {
     }
 }
 
-export async function refreshLongAccessToken(longAccessToken: string) {
+export async function refreshLongAccessToken(
+    longAccessToken: string
+): Promise<{ access_token: string; token_type: string; expires_in: string }> {
     const url = await strapi.plugins.instagram.services[
         'instagram-request-builder'
     ].getRefreshLongAccessTokenUrl(longAccessToken);
