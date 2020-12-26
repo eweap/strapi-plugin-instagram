@@ -3,7 +3,7 @@
         {
             "method": "GET",
             "path": "/connect",
-            "handler": "instagram-connect.getAuthorizationUrl",
+            "handler": "InstagramConnect.getAuthorizationUrl",
             "config": {
                 "policies": []
             }
@@ -11,7 +11,7 @@
         {
             "method": "POST",
             "path": "/callback",
-            "handler": "instagram-connect.handleCallback",
+            "handler": "InstagramConnect.handleCallback",
             "config": {
                 "policies": []
             }
@@ -20,7 +20,7 @@
         {
             "method": "GET",
             "path": "/posts",
-            "handler": "instagram-posts.index",
+            "handler": "InstagramPosts.index",
             "config": {
                 "policies": []
             }

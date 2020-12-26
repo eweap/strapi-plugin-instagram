@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 export async function getAuthorizationConfig() {
-    return await strapi.plugins.instagram.services['instagram-plugin-store']
-        .getPluginStore()
-        .get({
+    return await strapi.plugins.instagram.services.InstagramPluginStore.getPluginStore().get(
+        {
             key: 'authorization',
-        });
+        }
+    );
 }
 
 export async function getAll() {
@@ -36,7 +36,7 @@ export async function updateFeed(data: any) {
 
     const mediaIds = data.data.map((media: any) => media.id);
 
-    const oldPosts = await strapi.query('instagram-post', 'instagram').find();
+    const oldPosts = await strapi.query('InstagramPost', 'instagram').find();
     const oldPostExternalIds = oldPosts.map((p: any) => p.externalId);
 
     const newMediaIds = mediaIds.filter(
@@ -71,7 +71,7 @@ export async function updateFeed(data: any) {
 
     // newMedias.map(media => {
     //     console.log('Saving', media);
-    //     strapi.query('instagram-post', 'instagram').create({
+    //     strapi.query('InstagramPost', 'instagram').create({
     //         externalId: media.id,
     //         mediaType: media.media_type,
     //         mediaUrl: media.media_url,

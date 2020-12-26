@@ -1,4 +1,4 @@
-import * as InstagramPosts from './instagram-posts';
+import * as InstagramPosts from './InstagramPosts';
 
 describe('InstagramPosts', () => {
     it('should get authorization configuration', async () => {
