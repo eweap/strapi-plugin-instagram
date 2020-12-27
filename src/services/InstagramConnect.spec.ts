@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { InstagramAuthorizationData } from '../interfaces/authorization-data.interface';
 
-import * as InstagramConnect from './InstagramConnect';
+import InstagramConnect from './InstagramConnect';
 import * as MockInstagramPluginStore from '../testing/mocks/MockInstagramPluginStore';
 
 describe('InstagramConnect', () => {
@@ -141,9 +141,9 @@ describe('InstagramConnect', () => {
             };
 
             const responseData = {
-                ['access-token']: longAccessToken,
-                ['token-type']: tokenType,
-                ['expires-in']: expiresIn,
+                access_token: longAccessToken,
+                token_type: tokenType,
+                expires_in: expiresIn,
             };
             jest.spyOn(axios, 'get').mockResolvedValueOnce({
                 data: responseData,

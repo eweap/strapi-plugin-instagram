@@ -6,23 +6,23 @@ import { PluginConfig } from '../interfaces/plugin-config.interface';
 
 const ENDPOINT_PATH = '/plugins/instagram/connect-endpoint';
 
-export function getAdminUrl(): string {
+const getAdminUrl = function getAdminUrl(): string {
     return strapi.config.get('admin.url');
-}
+};
 
-export function getInstagramAppConfig(): PluginConfig {
+const getInstagramAppConfig = function getInstagramAppConfig(): PluginConfig {
     return strapi.plugins.instagram.config;
-}
+};
 
-export function getRedirectUrl(): string {
-    const { overrideAdminUrl } = this.getInstagramAppConfig();
+const getRedirectUrl = function getRedirectUrl(): string {
+    const { overrideAdminUrl } = module.getInstagramAppConfig();
 
     const redirectUrl = overrideAdminUrl || getAdminUrl();
 
     return `${redirectUrl}${ENDPOINT_PATH}`;
-}
+};
 
-export function getInstagramUrl(
+const getInstagramUrl = function getInstagramUrl(
     path = '',
     queryParams = {},
     rootUrl = InstagramConfig.rootUrl
@@ -38,45 +38,47 @@ export function getInstagramUrl(
     }
 
     return url;
-}
+};
 
-export function getAuthorizationPopupUrl() {
-    const { facebookAppClientId } = this.getInstagramAppConfig();
+const getAuthorizationPopupUrl = function getAuthorizationPopupUrl() {
+    const { facebookAppClientId } = module.getInstagramAppConfig();
 
-    return this.getInstagramUrl('/oauth/authorize', {
+    return module.getInstagramUrl('/oauth/authorize', {
         client_id: facebookAppClientId,
         response_type: 'code',
         scope: ['user_profile', 'user_media'].join(','),
-        redirect_uri: this.getRedirectUrl(),
+        redirect_uri: module.getRedirectUrl(),
     });
-}
+};
 
-export function getShortAccessTokenUrl(
+const getShortAccessTokenUrl = function getShortAccessTokenUrl(
     code: string
 ): { url: string; requestData: any } {
     const {
         facebookAppClientId,
         facebookAppClientSecret,
-    } = this.getInstagramAppConfig();
+    } = module.getInstagramAppConfig();
 
     const data = {
-        url: this.getInstagramUrl('/oauth/access_token'),
+        url: module.getInstagramUrl('/oauth/access_token'),
         requestData: qs.stringify({
             client_id: facebookAppClientId,
             client_secret: facebookAppClientSecret,
             code,
             grant_type: 'authorization_code',
-            redirect_uri: this.getRedirectUrl(),
+            redirect_uri: module.getRedirectUrl(),
         }),
     };
 
     return data;
-}
+};
 
-export function getLongAccessTokenUrl(shortAccessToken: string): string {
-    const { facebookAppClientSecret } = this.getInstagramAppConfig();
+const getLongAccessTokenUrl = function getLongAccessTokenUrl(
+    shortAccessToken: string
+): string {
+    const { facebookAppClientSecret } = module.getInstagramAppConfig();
 
-    return this.getInstagramUrl(
+    return module.getInstagramUrl(
         '/access_token',
         {
             access_token: shortAccessToken,
@@ -85,10 +87,12 @@ export function getLongAccessTokenUrl(shortAccessToken: string): string {
         },
         InstagramConfig.graphRootUrl
     );
-}
+};
 
-export function getRefreshLongAccessTokenUrl(longAccessToken: string) {
-    return this.getInstagramUrl(
+const getRefreshLongAccessTokenUrl = function getRefreshLongAccessTokenUrl(
+    longAccessToken: string
+) {
+    return module.getInstagramUrl(
         '/access_token',
         {
             access_token: longAccessToken,
@@ -96,4 +100,17 @@ export function getRefreshLongAccessTokenUrl(longAccessToken: string) {
         },
         InstagramConfig.graphRootUrl
     );
-}
+};
+
+const module = {
+    getAdminUrl,
+    getInstagramAppConfig,
+    getRedirectUrl,
+    getInstagramUrl,
+    getAuthorizationPopupUrl,
+    getShortAccessTokenUrl,
+    getLongAccessTokenUrl,
+    getRefreshLongAccessTokenUrl,
+};
+
+export default module;

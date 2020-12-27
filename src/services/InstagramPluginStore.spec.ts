@@ -1,4 +1,4 @@
-import * as InstagramPluginStore from './InstagramPluginStore';
+import InstagramPluginStore from './InstagramPluginStore';
 
 describe('InstagramConnect', () => {
     it('should save authorization data', async () => {

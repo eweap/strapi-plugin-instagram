@@ -6,9 +6,9 @@
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "target": "es2015", // or es2015 ?
+        "target": "es2015",
         "module": "CommonJS",
-        "typeRoots": ["node_modules/@types", "typings"],
+        "typeRoots": ["node_modules/@types", "src/typings"],
         "lib": ["es2017", "DOM"],
         "strictNullChecks": true,
         "noImplicitAny": true

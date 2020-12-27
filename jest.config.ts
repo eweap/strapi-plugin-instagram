@@ -8,6 +8,7 @@ export = {
     globals: {
         strapi: {
             log: {
+                info: () => {},
                 error: () => {},
             },
 
@@ -15,11 +16,6 @@ export = {
                 environment: 'test',
                 get: () => {},
             },
-
-            store: () => ({
-                get: () => {},
-                set: () => {},
-            }),
 
             plugins: {
                 instagram: {
@@ -29,6 +25,13 @@ export = {
                     },
                 },
             },
+
+            query: () => ({ find: () => {} }),
+
+            store: () => ({
+                get: () => {},
+                set: () => {},
+            }),
         },
     },
 };

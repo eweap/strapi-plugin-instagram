@@ -1,6 +1,6 @@
 export let pluginStore: StrapiPluginStore;
 
-export function getPluginStore(): StrapiPluginStore {
+const getPluginStore = function getPluginStore(): StrapiPluginStore {
     if (!pluginStore) {
         pluginStore = strapi.store({
             environment: strapi.config.environment,
@@ -10,4 +10,10 @@ export function getPluginStore(): StrapiPluginStore {
     }
 
     return pluginStore;
-}
+};
+
+const module = {
+    getPluginStore,
+};
+
+export default module;

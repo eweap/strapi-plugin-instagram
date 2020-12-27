@@ -1,5 +1,5 @@
 import { InstagramConfig } from '../config/instagram-api.config';
-import * as InstagramRequestBuilder from './InstagramRequestBuilder';
+import InstagramRequestBuilder from './InstagramRequestBuilder';
 
 import {
     testFacebookAppClientId,

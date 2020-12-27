@@ -2,19 +2,21 @@ import axios from 'axios';
 
 import { InstagramAuthorizationData } from '../interfaces/authorization-data.interface';
 
-export async function handleAuthorizationCode(code: string): Promise<boolean> {
+const handleAuthorizationCode = async function handleAuthorizationCode(
+    code: string
+): Promise<boolean> {
     try {
         const {
             access_token: short_access_token,
             user_id,
-        } = await requestShortAccessToken(code);
+        } = await module.requestShortAccessToken(code);
         const {
             access_token: long_access_token,
             token_type,
             expires_in,
-        } = await requestLongAccessToken(short_access_token);
+        } = await module.requestLongAccessToken(short_access_token);
 
-        await saveAuthorizationData({
+        await module.saveAuthorizationData({
             user_id,
             code,
             long_access_token,
@@ -24,7 +26,6 @@ export async function handleAuthorizationCode(code: string): Promise<boolean> {
 
         return true;
     } catch (error) {
-        console.log(error);
         const errorMessage =
             error?.response?.data?.error_message || error.toString();
 
@@ -34,21 +35,20 @@ export async function handleAuthorizationCode(code: string): Promise<boolean> {
 
         return false;
     }
-}
+};
 
-export async function saveAuthorizationData(
+const saveAuthorizationData = async function saveAuthorizationData(
     data: InstagramAuthorizationData
 ): Promise<void> {
-    console.log('saving', data);
     await strapi.plugins.instagram.services.InstagramPluginStore.getPluginStore().set(
         {
             key: 'authorization',
             value: data,
         }
     );
-}
+};
 
-export async function requestShortAccessToken(
+const requestShortAccessToken = async function requestShortAccessToken(
     code: string
 ): Promise<{ access_token: string; user_id: string }> {
     const {
@@ -72,9 +72,9 @@ export async function requestShortAccessToken(
 
         throw error;
     }
-}
+};
 
-export async function requestLongAccessToken(
+const requestLongAccessToken = async function requestLongAccessToken(
     shortAccessToken: string
 ): Promise<{ access_token: string; token_type: string; expires_in: string }> {
     const url = await strapi.plugins.instagram.services.InstagramRequestBuilder.getLongAccessTokenUrl(
@@ -99,9 +99,9 @@ export async function requestLongAccessToken(
 
         throw error;
     }
-}
+};
 
-export async function refreshLongAccessToken(
+const refreshLongAccessToken = async function refreshLongAccessToken(
     longAccessToken: string
 ): Promise<{ access_token: string; token_type: string; expires_in: string }> {
     const url = await strapi.plugins.instagram.services.InstagramRequestBuilder.getRefreshLongAccessTokenUrl(
@@ -115,4 +115,14 @@ export async function refreshLongAccessToken(
         token_type: data['token-type'],
         expires_in: data['expires-in'],
     };
-}
+};
+
+const module = {
+    handleAuthorizationCode,
+    saveAuthorizationData,
+    requestShortAccessToken,
+    requestLongAccessToken,
+    refreshLongAccessToken,
+};
+
+export default module;
