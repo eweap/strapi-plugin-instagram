@@ -15,10 +15,6 @@ const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<
     );
 };
 
-const getAll = async function getAll(): Promise<void> {
-    throw new Error('InstagramPosts.getAll() not implemented');
-};
-
 const fetchFeed = async function fetchFeed(): Promise<void> {
     const { accessToken, userId } = await module.getAuthorizationConfig();
 
@@ -104,7 +100,6 @@ const updateFeed = async function updateFeed(mediaIds: string[]) {
 
 const module = {
     getAuthorizationConfig,
-    getAll,
     fetchFeed,
     fetchInstagramMedia,
     updateFeed,
