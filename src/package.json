@@ -1,6 +1,6 @@
 {
     "name": "strapi-plugin-instagram",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "This plugin add your Instagram feed to the Strapi API",
     "license": "MIT",
     "dependencies": {
