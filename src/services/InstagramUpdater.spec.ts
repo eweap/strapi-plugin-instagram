@@ -14,7 +14,7 @@ describe('InstagramUpdater', () => {
     beforeEach(() => {
         jest.spyOn(strapi.log, 'error');
         strapi.plugins.instagram.services = {
-            InstagramPluginStore: MockInstagramPluginStore,
+            instagrampluginstore: { default: MockInstagramPluginStore },
         };
 
         jest.spyOn(MockInstagramPluginStore, 'getPluginStore').mockReturnValue(
@@ -29,7 +29,7 @@ describe('InstagramUpdater', () => {
     });
 
     describe('Feed', () => {
-        const accessToken = 'ACCESS_TOKEN';
+        const longAccessToken = 'LONG_ACCESS_TOKEN';
         const userId = 'USER_ID';
 
         beforeEach(() => {
@@ -37,9 +37,9 @@ describe('InstagramUpdater', () => {
                 InstagramUpdater,
                 'getAuthorizationConfig'
             ).mockResolvedValueOnce({
-                accessToken,
+                longAccessToken,
                 userId,
-            });
+            } as any);
 
             jest.spyOn(axios, 'get');
         });
@@ -67,7 +67,7 @@ describe('InstagramUpdater', () => {
 
             expect(InstagramUpdater.getAuthorizationConfig).toHaveBeenCalled();
             expect(axios.get).toHaveBeenCalledWith(
-                `https://graph.instagram.com/${userId}/media?access_token=${accessToken}`
+                `https://graph.instagram.com/${userId}/media?access_token=${longAccessToken}`
             );
             expect(InstagramUpdater.updateFeed).toHaveBeenCalledWith([]);
         });

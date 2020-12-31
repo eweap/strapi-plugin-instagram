@@ -88,7 +88,7 @@ describe('InstagramRequestBuilder', () => {
         );
     });
 
-    it('should return long access token url', () => {
+    it('should return refresh long access token url', () => {
         const longAccessToken = 'FAKE_LONG_ACCESS_TOKEN';
 
         const refreshAccessTokenUrl = InstagramRequestBuilder.getRefreshLongAccessTokenUrl(
@@ -96,7 +96,7 @@ describe('InstagramRequestBuilder', () => {
         );
 
         expect(refreshAccessTokenUrl).toEqual(
-            `${InstagramConfig.graphRootUrl}/access_token?access_token=${longAccessToken}&grant_type=ig_refresh_token`
+            `${InstagramConfig.graphRootUrl}/refresh_access_token?access_token=${longAccessToken}&grant_type=ig_refresh_token`
         );
     });
 });

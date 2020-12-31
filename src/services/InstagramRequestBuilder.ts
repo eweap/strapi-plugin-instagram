@@ -15,7 +15,9 @@ const getInstagramAppConfig = function getInstagramAppConfig(): PluginConfig {
 };
 
 const getRedirectUrl = function getRedirectUrl(): string {
-    const { overrideAdminUrl } = module.getInstagramAppConfig();
+    const {
+        overrideAdminUrl,
+    } = InstagramRequestBuilder.getInstagramAppConfig();
 
     const redirectUrl = overrideAdminUrl || getAdminUrl();
 
@@ -41,13 +43,15 @@ const getInstagramUrl = function getInstagramUrl(
 };
 
 const getAuthorizationPopupUrl = function getAuthorizationPopupUrl() {
-    const { facebookAppClientId } = module.getInstagramAppConfig();
+    const {
+        facebookAppClientId,
+    } = InstagramRequestBuilder.getInstagramAppConfig();
 
-    return module.getInstagramUrl('/oauth/authorize', {
+    return InstagramRequestBuilder.getInstagramUrl('/oauth/authorize', {
         client_id: facebookAppClientId,
         response_type: 'code',
         scope: ['user_profile', 'user_media'].join(','),
-        redirect_uri: module.getRedirectUrl(),
+        redirect_uri: InstagramRequestBuilder.getRedirectUrl(),
     });
 };
 
@@ -57,16 +61,16 @@ const getShortAccessTokenUrl = function getShortAccessTokenUrl(
     const {
         facebookAppClientId,
         facebookAppClientSecret,
-    } = module.getInstagramAppConfig();
+    } = InstagramRequestBuilder.getInstagramAppConfig();
 
     const data = {
-        url: module.getInstagramUrl('/oauth/access_token'),
+        url: InstagramRequestBuilder.getInstagramUrl('/oauth/access_token'),
         requestData: qs.stringify({
             client_id: facebookAppClientId,
             client_secret: facebookAppClientSecret,
             code,
             grant_type: 'authorization_code',
-            redirect_uri: module.getRedirectUrl(),
+            redirect_uri: InstagramRequestBuilder.getRedirectUrl(),
         }),
     };
 
@@ -76,9 +80,11 @@ const getShortAccessTokenUrl = function getShortAccessTokenUrl(
 const getLongAccessTokenUrl = function getLongAccessTokenUrl(
     shortAccessToken: string
 ): string {
-    const { facebookAppClientSecret } = module.getInstagramAppConfig();
+    const {
+        facebookAppClientSecret,
+    } = InstagramRequestBuilder.getInstagramAppConfig();
 
-    return module.getInstagramUrl(
+    return InstagramRequestBuilder.getInstagramUrl(
         '/access_token',
         {
             access_token: shortAccessToken,
@@ -92,17 +98,17 @@ const getLongAccessTokenUrl = function getLongAccessTokenUrl(
 const getRefreshLongAccessTokenUrl = function getRefreshLongAccessTokenUrl(
     longAccessToken: string
 ) {
-    return module.getInstagramUrl(
-        '/access_token',
+    return InstagramRequestBuilder.getInstagramUrl(
+        '/refresh_access_token',
         {
-            access_token: longAccessToken,
             grant_type: 'ig_refresh_token',
+            access_token: longAccessToken,
         },
         InstagramConfig.graphRootUrl
     );
 };
 
-const module = {
+const InstagramRequestBuilder = {
     getAdminUrl,
     getInstagramAppConfig,
     getRedirectUrl,
@@ -113,4 +119,4 @@ const module = {
     getRefreshLongAccessTokenUrl,
 };
 
-export default module;
+export default InstagramRequestBuilder;

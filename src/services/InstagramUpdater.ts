@@ -1,32 +1,33 @@
 import axios from 'axios';
+import { InstagramAuthorizationData } from '../interfaces/authorization-data.interface';
 import {
     InstagramGetMedia,
     InstagramGetUserMedias,
 } from '../interfaces/instagram-api/';
 
-const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<{
-    accessToken: string;
-    userId: string;
-}> {
-    return await strapi.plugins.instagram.services.InstagramPluginStore.getPluginStore().get(
-        {
+const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<InstagramAuthorizationData> {
+    return await strapi.plugins.instagram.services.instagrampluginstore.default
+        .getPluginStore()
+        .get({
             key: 'authorization',
-        }
-    );
+        });
 };
 
 const fetchFeed = async function fetchFeed(): Promise<void> {
-    const { accessToken, userId } = await module.getAuthorizationConfig();
+    const {
+        longAccessToken,
+        userId,
+    } = await InstagramUpdater.getAuthorizationConfig();
 
     try {
         const { data }: { data: InstagramGetUserMedias } = await axios.get(
-            `https://graph.instagram.com/${userId}/media?access_token=${accessToken}`
+            `https://graph.instagram.com/${userId}/media?access_token=${longAccessToken}`
         );
 
         const mediaIds = data.data.map((media: any) => media.id);
 
         // Update feed with the last data fetched
-        module.updateFeed(mediaIds);
+        InstagramUpdater.updateFeed(mediaIds);
     } catch (error) {
         console.log(error);
         const errorMessage =
@@ -41,14 +42,22 @@ const fetchFeed = async function fetchFeed(): Promise<void> {
 const fetchInstagramMedia = async function fetchInstagramMedia(
     mediaId: string
 ): Promise<InstagramGetMedia> {
-    const { accessToken } = await module.getAuthorizationConfig();
-    const fields = ['id', 'media_type', 'media_url', 'thumbnail_url'];
+    const { longAccessToken } = await InstagramUpdater.getAuthorizationConfig();
+    const fields = [
+        'id',
+        'media_type',
+        'media_url',
+        'thumbnail_url',
+        'caption',
+        'permalink',
+        'timestamp',
+    ];
 
     try {
         const { data }: { data: InstagramGetMedia } = await axios.get(
             `https://graph.instagram.com/${mediaId}?fields=${fields.join(
                 ','
-            )}&access_token=${accessToken}`
+            )}&access_token=${longAccessToken}`
         );
 
         return data;
@@ -65,10 +74,10 @@ const fetchInstagramMedia = async function fetchInstagramMedia(
 
 const updateFeed = async function updateFeed(mediaIds: string[]) {
     // Get old posts
-    const oldPostExternalIds: string[] = await strapi
+    const oldPosts: string[] = await strapi
         .query('InstagramPost', 'instagram')
-        .find()
-        .map((p: any) => p.externalId);
+        .find();
+    const oldPostExternalIds = oldPosts.map((p: any) => p.externalId);
 
     // Filter already saved posts
     const newMediaIds: string[] = mediaIds.filter(
@@ -77,19 +86,21 @@ const updateFeed = async function updateFeed(mediaIds: string[]) {
 
     // Fetch each media infos (needed ?)
     const newMediasPromise = newMediaIds.map(async (newMediaId: string) => {
-        return await module.fetchInstagramMedia(newMediaId);
+        return await InstagramUpdater.fetchInstagramMedia(newMediaId);
     });
 
     // Wait all requests to finish
     const newMedias = await Promise.all(newMediasPromise);
 
     // Save new instagram post one by one
-    newMedias.map((media: any) => {
+    newMedias.map(media => {
         strapi.query('InstagramPost', 'instagram').create({
             externalId: media.id,
             mediaType: media.media_type,
             mediaUrl: media.media_url,
             thumbnailUrl: media.thumbnail_url,
+            caption: media.caption,
+            permalink: media.permalink,
         });
     });
 
@@ -98,11 +109,11 @@ const updateFeed = async function updateFeed(mediaIds: string[]) {
     );
 };
 
-const module = {
+const InstagramUpdater = {
     getAuthorizationConfig,
     fetchFeed,
     fetchInstagramMedia,
     updateFeed,
 };
 
-export default module;
+export default InstagramUpdater;

@@ -9,19 +9,21 @@ const handleAuthorizationCode = async function handleAuthorizationCode(
         const {
             access_token: short_access_token,
             user_id,
-        } = await module.requestShortAccessToken(code);
+        } = await InstagramConnect.requestShortAccessToken(code);
         const {
             access_token: long_access_token,
             token_type,
-            expires_in,
-        } = await module.requestLongAccessToken(short_access_token);
+            expires_in, // Number of seconds left before token expiration
+        } = await InstagramConnect.requestLongAccessToken(short_access_token);
 
-        await module.saveAuthorizationData({
-            user_id,
-            code,
-            long_access_token,
-            token_type,
-            expires_in,
+        // Calculate when the token will expires
+        const expiresAt = InstagramConnect.calculateExpiresAt(expires_in);
+
+        await InstagramConnect.saveAuthorizationData({
+            userId: user_id,
+            longAccessToken: long_access_token,
+            tokenType: token_type,
+            expiresAt,
         });
 
         return true;
@@ -40,12 +42,12 @@ const handleAuthorizationCode = async function handleAuthorizationCode(
 const saveAuthorizationData = async function saveAuthorizationData(
     data: InstagramAuthorizationData
 ): Promise<void> {
-    await strapi.plugins.instagram.services.InstagramPluginStore.getPluginStore().set(
-        {
+    await strapi.plugins.instagram.services.instagrampluginstore.default
+        .getPluginStore()
+        .set({
             key: 'authorization',
             value: data,
-        }
-    );
+        });
 };
 
 const requestShortAccessToken = async function requestShortAccessToken(
@@ -54,7 +56,7 @@ const requestShortAccessToken = async function requestShortAccessToken(
     const {
         url,
         requestData,
-    } = await strapi.plugins.instagram.services.InstagramRequestBuilder.getShortAccessTokenUrl(
+    } = await strapi.plugins.instagram.services.instagramrequestbuilder.default.getShortAccessTokenUrl(
         code
     );
 
@@ -76,8 +78,8 @@ const requestShortAccessToken = async function requestShortAccessToken(
 
 const requestLongAccessToken = async function requestLongAccessToken(
     shortAccessToken: string
-): Promise<{ access_token: string; token_type: string; expires_in: string }> {
-    const url = await strapi.plugins.instagram.services.InstagramRequestBuilder.getLongAccessTokenUrl(
+): Promise<{ access_token: string; token_type: string; expires_in: number }> {
+    const url = await strapi.plugins.instagram.services.instagramrequestbuilder.default.getLongAccessTokenUrl(
         shortAccessToken
     );
 
@@ -104,25 +106,35 @@ const requestLongAccessToken = async function requestLongAccessToken(
 const refreshLongAccessToken = async function refreshLongAccessToken(
     longAccessToken: string
 ): Promise<{ access_token: string; token_type: string; expires_in: string }> {
-    const url = await strapi.plugins.instagram.services.InstagramRequestBuilder.getRefreshLongAccessTokenUrl(
+    const url = await strapi.plugins.instagram.services.instagramrequestbuilder.default.getRefreshLongAccessTokenUrl(
         longAccessToken
     );
 
     const { data } = await axios.get(url);
 
     return {
-        access_token: data['access-token'],
-        token_type: data['token-type'],
-        expires_in: data['expires-in'],
+        access_token: data.access_token,
+        token_type: data.token_type,
+        expires_in: data.expires_in,
     };
 };
 
-const module = {
+const calculateExpiresAt = function calculateExpiresAt(
+    expires_in: number
+): string {
+    return new Date(
+        // Convert to ms
+        Date.now() + expires_in * 1000
+    ).toISOString();
+};
+
+const InstagramConnect = {
     handleAuthorizationCode,
     saveAuthorizationData,
     requestShortAccessToken,
     requestLongAccessToken,
     refreshLongAccessToken,
+    calculateExpiresAt,
 };
 
-export default module;
+export default InstagramConnect;

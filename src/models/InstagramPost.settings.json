@@ -21,6 +21,12 @@
         },
         "thumbnailUrl": {
             "type": "string"
+        },
+        "caption": {
+            "type": "string"
+        },
+        "permalink": {
+            "type": "string"
         }
     }
 }

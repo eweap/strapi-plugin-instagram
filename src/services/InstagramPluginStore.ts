@@ -12,8 +12,8 @@ const getPluginStore = function getPluginStore(): StrapiPluginStore {
     return pluginStore;
 };
 
-const module = {
+const InstagramPluginStore = {
     getPluginStore,
 };
 
-export default module;
+export default InstagramPluginStore;

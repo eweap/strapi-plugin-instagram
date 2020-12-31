@@ -1,5 +1,5 @@
 export async function getAuthorizationUrl(ctx: any) {
-    const authorizationUrl = await strapi.plugins.instagram.services.InstagramRequestBuilder.getAuthorizationPopupUrl();
+    const authorizationUrl = await strapi.plugins.instagram.services.instagramrequestbuilder.default.getAuthorizationPopupUrl();
 
     ctx.send({ authorizationUrl });
 }
@@ -12,8 +12,8 @@ export async function handleCallback(ctx: any) {
         ctx.throw(401, 'No code provided');
     }
 
-    // Handle authorzation code
-    const success = await strapi.plugins.instagram.services.InstagramConnect.handleAuthorizationCode(
+    // Handle authorization code
+    const success = await strapi.plugins.instagram.services.instagramconnect.default.handleAuthorizationCode(
         code
     );
 

@@ -4,8 +4,8 @@ const getAll = async function getAll(): Promise<InstagramPost[]> {
     return strapi.query('InstagramPost', 'instagram').find();
 };
 
-const module = {
+const InstagramPosts = {
     getAll,
 };
 
-export default module;
+export default InstagramPosts;

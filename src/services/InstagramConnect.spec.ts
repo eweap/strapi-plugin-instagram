@@ -11,12 +11,13 @@ describe('InstagramConnect', () => {
     const shortAccessToken = 'SHORT_ACCESS_TOKEN';
     const longAccessToken = 'LONG_ACCESS_TOKEN';
     const tokenType = 'TOKEN_TYPE';
-    const expiresIn = new Date().toISOString();
+    const expiresIn = 1000 * 60 * 60 * 24; // 1 day
+    const expiresAt = new Date().toISOString();
 
     beforeEach(() => {
         jest.spyOn(strapi.log, 'error');
         strapi.plugins.instagram.services = {
-            InstagramPluginStore: MockInstagramPluginStore,
+            instagrampluginstore: { default: MockInstagramPluginStore },
         };
     });
 
@@ -41,6 +42,9 @@ describe('InstagramConnect', () => {
                 InstagramConnect,
                 'saveAuthorizationData'
             ).mockResolvedValueOnce(undefined);
+            jest.spyOn(InstagramConnect, 'calculateExpiresAt').mockReturnValue(
+                expiresAt
+            );
 
             const result = await InstagramConnect.handleAuthorizationCode(
                 authorizationCode
@@ -55,11 +59,10 @@ describe('InstagramConnect', () => {
             ).toHaveBeenCalledWith(shortAccessToken);
             expect(InstagramConnect.saveAuthorizationData).toHaveBeenCalledWith(
                 {
-                    user_id: userId,
-                    code: authorizationCode,
-                    long_access_token: longAccessToken,
-                    token_type: tokenType,
-                    expires_in: expiresIn,
+                    userId: userId,
+                    longAccessToken: longAccessToken,
+                    tokenType: tokenType,
+                    expiresAt: expiresAt,
                 }
             );
         });
@@ -86,21 +89,20 @@ describe('InstagramConnect', () => {
                 set: jest.fn(),
             };
             jest.spyOn(
-                strapi.plugins.instagram.services.InstagramPluginStore,
+                strapi.plugins.instagram.services.instagrampluginstore.default,
                 'getPluginStore'
             ).mockReturnValue(pluginStore);
             const data: InstagramAuthorizationData = {
-                user_id: userId,
-                code: authorizationCode,
-                expires_in: expiresIn,
-                long_access_token: longAccessToken,
-                token_type: tokenType,
+                userId: userId,
+                longAccessToken: longAccessToken,
+                tokenType: tokenType,
+                expiresAt: expiresIn,
             };
 
             await InstagramConnect.saveAuthorizationData(data);
 
             expect(
-                strapi.plugins.instagram.services.InstagramPluginStore
+                strapi.plugins.instagram.services.instagrampluginstore.default
                     .getPluginStore
             ).toHaveBeenCalled();
             expect(pluginStore.set).toHaveBeenCalledWith({
@@ -116,10 +118,12 @@ describe('InstagramConnect', () => {
         it('should request a short access token', async () => {
             const requestData = '';
             strapi.plugins.instagram.services = {
-                InstagramRequestBuilder: {
-                    getShortAccessTokenUrl: jest
-                        .fn()
-                        .mockResolvedValue({ url, requestData }),
+                instagramrequestbuilder: {
+                    default: {
+                        getShortAccessTokenUrl: jest
+                            .fn()
+                            .mockResolvedValue({ url, requestData }),
+                    },
                 },
             };
             const code = 'FAKE_CODE';
@@ -135,8 +139,10 @@ describe('InstagramConnect', () => {
 
         it('should request a long access token', async () => {
             strapi.plugins.instagram.services = {
-                InstagramRequestBuilder: {
-                    getLongAccessTokenUrl: jest.fn().mockResolvedValue(url),
+                instagramrequestbuilder: {
+                    default: {
+                        getLongAccessTokenUrl: jest.fn().mockResolvedValue(url),
+                    },
                 },
             };
 
@@ -161,17 +167,19 @@ describe('InstagramConnect', () => {
 
         it('should refresh a long access token', async () => {
             strapi.plugins.instagram.services = {
-                InstagramRequestBuilder: {
-                    getRefreshLongAccessTokenUrl: jest
-                        .fn()
-                        .mockResolvedValue(url),
+                instagramrequestbuilder: {
+                    default: {
+                        getRefreshLongAccessTokenUrl: jest
+                            .fn()
+                            .mockResolvedValue(url),
+                    },
                 },
             };
 
             const responseData = {
-                ['access-token']: longAccessToken,
-                ['token-type']: tokenType,
-                ['expires-in']: expiresIn,
+                ['access_token']: longAccessToken,
+                ['token_type']: tokenType,
+                ['expires_in']: expiresIn,
             };
             jest.spyOn(axios, 'get').mockResolvedValueOnce({
                 data: responseData,
