@@ -4,14 +4,14 @@
     "description": "This plugin add your Instagram feed to the Strapi API",
     "license": "MIT",
     "dependencies": {
-        "@buffetjs/core": "^3.3.1",
-        "@buffetjs/custom": "^3.3.1",
+        "@buffetjs/core": "^3.3.3",
+        "@buffetjs/custom": "^3.3.3",
         "axios": "^0.20.0",
         "path-to-regexp": "^6.2.0",
-        "query-string": "^6.13.7",
+        "query-string": "^6.13.8",
         "react": "^16.13.1",
         "react-router-dom": "^5.1.2",
-        "strapi-helper-plugin": "3.3.3"
+        "strapi-helper-plugin": "^3.4.1"
     },
     "devDependencies": {},
     "strapi": {
