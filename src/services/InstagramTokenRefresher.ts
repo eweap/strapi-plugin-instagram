@@ -46,15 +46,23 @@ const refreshToken = async function refreshToken(): Promise<void> {
             strapi.plugins.instagram.services.instagramconnect.default.saveAuthorizationData(
                 refreshedAuthorizationData
             );
+
+            strapi.log.info(
+                `🔄 Instagram Plugin -> 🔒 Long access token refreshed`
+            );
         } catch (error) {
             console.log(error);
             const errorMessage =
                 error?.response?.data?.error?.message || error.toString();
 
             strapi.log.error(
-                `❌ Instagram Plugin -> Failed to refresh access token (${errorMessage})`
+                `❌ Instagram Plugin -> 🔒 Failed to refresh access token (${errorMessage})`
             );
         }
+    } else {
+        strapi.log.info(
+            `🔄 Instagram Plugin -> 🔒 No need to refresh token, will expires: ${expiresAt}`
+        );
     }
 };
 

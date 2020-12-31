@@ -34,7 +34,7 @@ const fetchFeed = async function fetchFeed(): Promise<void> {
             error?.response?.data?.error?.message || error.toString();
 
         strapi.log.error(
-            `❌ Instagram Plugin -> Failed fetching feed (${errorMessage})`
+            `❌ Instagram Plugin -> 📰 Failed fetching feed (${errorMessage})`
         );
     }
 };
@@ -63,7 +63,7 @@ const fetchInstagramMedia = async function fetchInstagramMedia(
         return data;
     } catch (error) {
         strapi.log.error(
-            `❌ Instagram Plugin -> Failed fetching feed (${
+            `❌ Instagram Plugin -> 📰 Failed fetching media ${mediaId} (${
                 error.message || error.toString()
             })`
         );
@@ -105,7 +105,7 @@ const updateFeed = async function updateFeed(mediaIds: string[]) {
     });
 
     strapi.log.info(
-        `✅ Instagram Plugin -> Feed updated with ${newMedias.length} new medias !`
+        `✅ Instagram Plugin -> 📰 Feed updated with ${newMedias.length} new medias !`
     );
 };
 

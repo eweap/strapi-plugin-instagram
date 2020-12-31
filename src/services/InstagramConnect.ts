@@ -32,7 +32,7 @@ const handleAuthorizationCode = async function handleAuthorizationCode(
             error?.response?.data?.error_message || error.toString();
 
         strapi.log.error(
-            `❌ Instagram Plugin -> Failed retrieving short access token (${errorMessage})`
+            `❌ Instagram Plugin -> 🔒 Failed handling authorization code (${errorMessage})`
         );
 
         return false;
@@ -69,7 +69,7 @@ const requestShortAccessToken = async function requestShortAccessToken(
             error?.response?.data?.error_message || error.toString();
 
         strapi.log.error(
-            `❌ Instagram Plugin -> Failed retrieving short access token (${errorMessage})`
+            `❌ Instagram Plugin -> 🔒 Failed retrieving short access token (${errorMessage})`
         );
 
         throw error;
@@ -96,7 +96,7 @@ const requestLongAccessToken = async function requestLongAccessToken(
             error?.response?.data?.error_message || error.toString();
 
         strapi.log.error(
-            `❌ Instagram Plugin -> Failed retrieving long access token (${errorMessage})`
+            `❌ Instagram Plugin -> 🔒 Failed retrieving long access token (${errorMessage})`
         );
 
         throw error;
