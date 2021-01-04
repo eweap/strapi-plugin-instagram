@@ -1,6 +1,6 @@
 import { InstagramAuthorizationData } from '../interfaces/authorization-data.interface';
 
-const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<InstagramAuthorizationData> {
+const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<InstagramAuthorizationData | null> {
     return await strapi.plugins.instagram.services.instagrampluginstore.default
         .getPluginStore()
         .get({
@@ -20,11 +20,20 @@ const isRefreshNeeded = function isRefreshNeeded(expiresAt: string): boolean {
 
 // A cron task must trigger this refresh verification
 const refreshToken = async function refreshToken(): Promise<void> {
-    const {
-        userId,
-        expiresAt,
-        longAccessToken,
-    } = await InstagramTokenRefresher.getAuthorizationConfig();
+    const authorizationConfig = await InstagramTokenRefresher.getAuthorizationConfig();
+
+    if (
+        !authorizationConfig?.userId ||
+        !authorizationConfig?.expiresAt ||
+        !authorizationConfig?.longAccessToken
+    ) {
+        strapi.log.info(
+            `🔄 Instagram Plugin -> No need to refresh token, user not connected`
+        );
+        return;
+    }
+
+    const { userId, expiresAt, longAccessToken } = authorizationConfig;
 
     if (InstagramTokenRefresher.isRefreshNeeded(expiresAt)) {
         try {

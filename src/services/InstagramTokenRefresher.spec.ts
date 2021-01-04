@@ -50,7 +50,7 @@ describe('InstagramTokenRefresher', () => {
             jest.spyOn(
                 InstagramTokenRefresher,
                 'getAuthorizationConfig'
-            ).mockResolvedValueOnce({
+            ).mockResolvedValue({
                 userId,
                 expiresAt,
                 longAccessToken,
@@ -77,6 +77,19 @@ describe('InstagramTokenRefresher', () => {
             (InstagramConnect.refreshLongAccessToken as jest.Mock).mockReset();
             (InstagramConnect.saveAuthorizationData as jest.Mock).mockReset();
             (InstagramConnect.calculateExpiresAt as jest.Mock).mockReset();
+        });
+
+        it('should not refresh token when IG account is not connected', async () => {
+            jest.spyOn(
+                InstagramTokenRefresher,
+                'getAuthorizationConfig'
+            ).mockResolvedValueOnce(null);
+
+            await InstagramTokenRefresher.refreshToken();
+
+            expect(
+                InstagramConnect.saveAuthorizationData
+            ).not.toHaveBeenCalled();
         });
 
         it('should refresh token when needed and save data to plugin store', async () => {

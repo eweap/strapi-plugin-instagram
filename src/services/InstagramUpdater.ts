@@ -5,7 +5,7 @@ import {
     InstagramGetUserMedias,
 } from '../interfaces/instagram-api/';
 
-const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<InstagramAuthorizationData> {
+const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<InstagramAuthorizationData | null> {
     return await strapi.plugins.instagram.services.instagrampluginstore.default
         .getPluginStore()
         .get({
@@ -14,10 +14,16 @@ const getAuthorizationConfig = async function getAuthorizationConfig(): Promise<
 };
 
 const fetchFeed = async function fetchFeed(): Promise<void> {
-    const {
-        longAccessToken,
-        userId,
-    } = await InstagramUpdater.getAuthorizationConfig();
+    const authorizationConfig = await InstagramUpdater.getAuthorizationConfig();
+
+    if (!authorizationConfig?.userId || !authorizationConfig?.longAccessToken) {
+        strapi.log.info(
+            `📰 Instagram Plugin -> No need to fetch feed, user not connected`
+        );
+        return;
+    }
+
+    const { longAccessToken, userId } = authorizationConfig;
 
     try {
         const { data }: { data: InstagramGetUserMedias } = await axios.get(
@@ -42,7 +48,14 @@ const fetchFeed = async function fetchFeed(): Promise<void> {
 const fetchInstagramMedia = async function fetchInstagramMedia(
     mediaId: string
 ): Promise<InstagramGetMedia> {
-    const { longAccessToken } = await InstagramUpdater.getAuthorizationConfig();
+    const authorizationConfig = await InstagramUpdater.getAuthorizationConfig();
+
+    if (!authorizationConfig?.longAccessToken) {
+        throw new Error(
+            'No long access token available to fetch instagram media'
+        );
+    }
+
     const fields = [
         'id',
         'media_type',
@@ -57,7 +70,7 @@ const fetchInstagramMedia = async function fetchInstagramMedia(
         const { data }: { data: InstagramGetMedia } = await axios.get(
             `https://graph.instagram.com/${mediaId}?fields=${fields.join(
                 ','
-            )}&access_token=${longAccessToken}`
+            )}&access_token=${authorizationConfig.longAccessToken}`
         );
 
         return data;

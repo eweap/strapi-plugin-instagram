@@ -36,7 +36,7 @@ describe('InstagramUpdater', () => {
             jest.spyOn(
                 InstagramUpdater,
                 'getAuthorizationConfig'
-            ).mockResolvedValueOnce({
+            ).mockResolvedValue({
                 longAccessToken,
                 userId,
             } as any);
@@ -48,8 +48,16 @@ describe('InstagramUpdater', () => {
             (axios.get as jest.Mock).mockReset();
         });
 
-        it.skip('should get all instagram posts', async () => {
-            await InstagramUpdater.getAll();
+        it('should not fetch feed when IG account is not connected', async () => {
+            jest.spyOn(
+                InstagramUpdater,
+                'getAuthorizationConfig'
+            ).mockResolvedValue(null);
+
+            await InstagramUpdater.fetchFeed();
+
+            expect(InstagramUpdater.getAuthorizationConfig).toHaveBeenCalled();
+            expect(axios.get).not.toHaveBeenCalled();
         });
 
         it('should fetch feed', async () => {
@@ -86,9 +94,11 @@ describe('InstagramUpdater', () => {
                 ).mockResolvedValue({
                     id: 'FAKE_ID',
                     media_type: 'IMAGE',
+                    caption: 'CAPTION',
                     media_url: 'URL',
-                    username: 'username',
+                    thumbnail_url: 'THUMBNAIL_URL',
                     timestamp: new Date().toISOString(),
+                    permalink: 'PERMALINK',
                 });
 
                 (axios.get as jest.Mock).mockResolvedValue({ data: oldPosts });
