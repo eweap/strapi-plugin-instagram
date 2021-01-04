@@ -17,16 +17,16 @@
             "type": "string"
         },
         "mediaUrl": {
-            "type": "string"
+            "type": "text"
         },
         "thumbnailUrl": {
-            "type": "string"
+            "type": "text"
         },
         "caption": {
             "type": "text"
         },
         "permalink": {
-            "type": "string"
+            "type": "text"
         }
     }
 }
