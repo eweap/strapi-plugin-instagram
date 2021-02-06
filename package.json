@@ -4,13 +4,8 @@
     "description": "This plugin add your Instagram feed to the Strapi API",
     "license": "MIT",
     "private": true,
-    "keywords": [
-        "strapi",
-        "instagram",
-        "feed"
-    ],
     "scripts": {
-        "build": "rimraf dist && tsc -p src",
+        "build": "rimraf dist && tsc -p src && cp README.md dist",
         "watch": "rimraf dist && tsc -w -p src",
         "test": "jest --forceExit --detectOpenHandles",
         "prepublishOnly": "npm run build"
