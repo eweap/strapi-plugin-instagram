@@ -1,16 +1,20 @@
 {
     "name": "strapi-plugin-instagram",
     "version": "0.0.0",
-    "description": "This plugin add your Instagram feed to the Strapi API",
-    "license": "MIT",
     "private": true,
-    "keywords": [
-        "strapi",
-        "instagram",
-        "feed"
-    ],
+    "homepage": "https://github.com/eweap/strapi-plugin-instagram",
+    "bugs": "https://github.com/eweap/strapi-plugin-instagram/issues",
+    "license": "MIT",
+    "engines": {
+        "node": ">=10.16.0 <=14.x.x",
+        "npm": ">=6.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eweap/strapi-plugin-instagram.git"
+    },
     "scripts": {
-        "build": "rimraf dist && tsc -p src",
+        "build": "rimraf dist && tsc -p src && cp README.md dist",
         "watch": "rimraf dist && tsc -w -p src",
         "test": "jest --forceExit --detectOpenHandles",
         "prepublishOnly": "npm run build"
@@ -37,28 +41,5 @@
         "rimraf": "^3.0.2",
         "ts-node": "^9.1.1",
         "typescript": "^4.1.3"
-    },
-    "author": {
-        "name": "Jonathan Bonnefoy",
-        "email": "contact@e-weap.fr",
-        "url": "https://e-weap.fr"
-    },
-    "maintainers": [
-        {
-            "name": "Jonathan Bonnefoy",
-            "email": "contact@e-weap.fr",
-            "url": "https://e-weap.fr"
-        }
-    ],
-    "engines": {
-        "node": ">=10.16.0 <=14.x.x",
-        "npm": ">=6.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/eweap/strapi-plugin-instagram.git"
-    },
-    "bugs": {
-        "url": "https://github.com/eweap/strapi-plugin-instagram/issues"
     }
 }
